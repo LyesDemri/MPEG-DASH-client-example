@@ -1,15 +1,14 @@
-document.write('starting <br/>');
-
 var segment;
 var timeToFetch = 1;
 var seg = 0;
 var mediaSource = new MediaSource();
-mediaSource.addEventListener('sourceopen',sourceOuverte);
+mediaSource.addEventListener('sourceopen',sourceOpen);
 var sourceBuffer;
 var video = document.getElementById("vivi");
 video.src = URL.createObjectURL(mediaSource);
 video.addEventListener("timeupdate",timeUpdate);
 
+//these values are straight from the Media Presentation Description file
 var qualities = ["1280_4M","768_1440K","512_640K"];
 var bitrates = [4114301,1880897,1082580];
 var quality = 0;
@@ -20,12 +19,12 @@ var requestSendDate;
 var requestReceiveDate;
 var downloadRate;
 
-function sourceOuverte() {
-	//mettre les choses en place:
+function sourceOpen() {
+	//put things in place
 	var mediaSource = this;
 	sourceBuffer = mediaSource.addSourceBuffer('video/mp4; codecs="avc1.42c01f');
 	sourceBuffer.addEventListener('update',segmentAppended)
-	//commencer la boucle infinie:
+	//start main loop
 	mainLoop();
 }
 
@@ -36,7 +35,8 @@ function mainLoop() {
 		console.log("seg = "+seg+", qualityChange = "+qualityChange)
 	}
 	else
-		URL = "https://dash.akamaized.net/dash264/TestCases/2c/qualcomm/1/ED_"+qualities[quality]+"_MPEG2_video_"+((seg-1)*24576)+".mp4"
+		URL = "https://dash.akamaized.net/dash264/TestCases/2c/qualcomm/1/ED_"+qualities[quality]+"_MPEG2_video_"+((seg-1)*24576)+".mp4";
+	document.title = qualities[quality];
 	var xhttp = new XMLHttpRequest();
 	xhttp.open("GET", URL);
 	xhttp.responseType = "arraybuffer";
